@@ -2,7 +2,7 @@
 
 This repository provides two modules, one is to get words from text and other implements n'th order Markov chain.
 
-It is easily noticable that the order of consonants and vowels in any language is important for pronunciation.
+It is easily noticeable that the order of consonants and vowels in any language is important for pronunciation.
 I have tried to explore this in a simple way- using the concept of Markov Chains.
 
 Most commonly, a sequence of states is considered to be a Markov chain if the next state depends only on the current state and is independent of the previous states.
