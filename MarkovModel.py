@@ -37,7 +37,7 @@ class MarkovModel:
 		print("Class",self.__class__.__name__,":: Instance created.\n") if self.verbose else ""
  ###END __init__ ###
 
-	def fit(self,state_sequences=None,states=None,order=None,filename=None,from_file=False):
+	def fit(self,state_sequences=None,states=None,order=None,replacenan=False,filename=None,from_file=False):
 		#Fit model to data. In this case, calculate transition probability matrices.
 		self.filename = filename
 		self.from_file = from_file
@@ -92,6 +92,12 @@ class MarkovModel:
 		else:
 			#Load model from file
 			self.load(fname=filename)
+
+		#If requested, replace nan, positive inf and negative inf with zero
+		if replacenan:
+			#print("NaNs are being replaced with",nan)
+			np.nan_to_num(self.transitionProbMat,copy=False)
+			np.nan_to_num(self.transitionProbMat_cumsum,copy=False)
 
 		#Set this option to print full numpy arrays
 		np.set_printoptions(threshold=sys.maxsize)
@@ -167,6 +173,20 @@ class MarkovModel:
 		return(seq[self.order:])
 ### END generate ###
 
+	def probability(self,word,verbose=False):
+		#Calculate probability of generation of given word
+		word = word.lower()
+		prob = 1.0
+		#print(word)
+		for i in range(0,len(word)-self.order):
+			p = self.transitionProbMat[ tuple([self.states.index(state) for state in word[i:i+self.order+1]]) ]
+			if verbose:
+				print(word[i:i+self.order+1], list(word[i:i+self.order+1]), tuple([self.states.index(state) for state in word[i:i+self.order+1]]), '{:.3f}'.format(p), end="\n")
+			prob *= p
+		#print('{:.8f}'.format(prob))
+		return(prob)
+### END probability ###
+
 	def tofile(self,filename=None):
 		#Dump model to file
 		print("Dumping model to file:",filename,"(This does not save training data.)") if self.verbose else ""
@@ -184,7 +204,6 @@ class MarkovModel:
 	### END load ###
 
 ###### END Class MarkovModel ######
-
 
 
 
