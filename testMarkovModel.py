@@ -10,9 +10,11 @@ datafile = "data/WebOfScience_abstracts.txt"
 minlen = 2
 states = ['^','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
 numWords = 5000 #Words to be generated for calculation of statistic
+apostropheFlag = False
+ignoreUpperCaseFlag = True
 
 t2w = TextToWords(datafile,minlength=minlen)
-t2w.detectWords()
+t2w.detectWords(apostrophe=apostropheFlag, ignoreUpperCase=ignoreUpperCaseFlag)
 #print(t2w.words)
 #print(t2w.aslist())
 words_as_lists = t2w.aslist()
@@ -100,15 +102,45 @@ for order in [1,2,3]:
 		del model
 	print("")
 print("")
+
 ###############################################################################################
+
+
+print("Calculate probability of generation of a given word.\n")
+
+model = MarkovModel()
+model.fit(state_sequences=words_as_lists, states=states, order=2, replacenan=True)
+print("Probability of word generation\n")
+for word in ["earth","gravity","the","of","harsh","physics","encyclopedia","Blue","Marble","first","full","view","photograph","of","the","planet","was","taken","by","Apollo","astronauts","en","route","to","the","Moon","banana","bananax","sumedha"]:
+	print("P(" + word + ") = " + '{:.16f}'.format(model.probability(word, verbose=True)) + "\n")
+
 
 #Delete objects
 del t2w
 del words_as_lists
 
 
+###############################################################################################
+"""
+sentences = [["Hello","world"], ["good","morning"], ["good","evening"], ["good","afternoon"], ["good","day"], ["i","eat","breakfast","in","morning"], ["i","do","exercise","in","evening"], ["in","evening","i","do","exercise"], ["he","is","having","breakfast"], ["earth","is","round"], ["earth","revolves","around","sun"], ["moon","revolves","around","earth"], ["sattelites","revolve","around","earth","as","well","as","around","moon","and","planets"], ["sattelites","revolve","around","moon"], ["satellites","revolve","around","planets"], ["mars","is","planet"], ["jupiter","is","planet"], ["sun","is","not","planet"], ["saturn","is","planet"]]
 
+states = {}
+for s in sentences:
+	for w in s:
+		if w not in states:
+			states[w] = 0
+		states[w] += 1
 
+print(states)
 
+print("Trying markov model for sentences.\n")
 
+model = MarkovModel()
+model.fit(state_sequences=sentences, states=["^"]+list(states.keys()), order=1, replacenan=True)
+
+for i in range(0,50):
+	sentence = ' '.join(model.generate(length=4, forced=True))
+	print(sentence)
+
+"""
 
