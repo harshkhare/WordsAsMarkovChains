@@ -19,3 +19,8 @@ Complexity of models (defined by the order parameter in this case) leads to the 
 It can also be noted that when model is trained with words of a specific lengths, then the frequency of generation of input words increases substantially, suggesting that the model is able to learn length-specific features of the words.
 
 A sample output of testMarkovModel.py can be found in testMarkovModel.out.
+
+Original application for which the code was built:
+There are several applications for which Markov chains could be used. While current examples are for generating words in English text, the code was originally built to identify and generate intrinsically disordered proteins sequences.
+An amino acid sequence of a protein can be considered as a Markov chain. With enough training, this generative model can generate new protein sequences similar to the ones in the training set. This is particularly useful for generating sequences of intrinsically disordered proteins, which are low complexity sequences in most cases. Generating new but realistic sequences of this type is notoriously difficult and Markov model approach could be one of the ways to generate new sequences of intrinsically disordered proteins.
+Besides generating new sequences, identification of such sequences can also be accomplished using Markov models. Such predictions are based on the probability of a given sequence.
